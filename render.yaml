@@ -33,7 +33,4 @@ services:
         sync: false
         placeholder: "Enter production database connection string: postgresql://user:pass@host/db"
 
-databases:
-  - name: adtech-db
-    plan: free
-    postgresMajorVersion: 16
+
