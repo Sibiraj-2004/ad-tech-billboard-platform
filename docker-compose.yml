@@ -1,0 +1,92 @@
+# ==============================================
+# Ad-Tech Platform — Docker Compose (Development)
+# ==============================================
+# Usage: docker-compose up -d
+# All services with hot-reload for development
+
+
+
+services:
+  # ── PostgreSQL Database ──────────────────────────────────
+  db:
+    image: postgres:16-alpine
+    container_name: adtech-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: adtech_db
+      POSTGRES_USER: adtech_user
+      POSTGRES_PASSWORD: adtech_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U adtech_user -d adtech_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── FastAPI Backend ──────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: ../docker/backend/Dockerfile
+    container_name: adtech-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgresql+asyncpg://adtech_user:adtech_password@db:5432/adtech_db
+      - DATABASE_URL_SYNC=postgresql://adtech_user:adtech_password@db:5432/adtech_db
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./backend:/app
+      - ./backend/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    command: >
+      sh -c "alembic upgrade head && 
+             python -c 'import asyncio; from app.db.session import async_session_factory; from app.db.init_db import init_db; asyncio.run(init_db(async_session_factory()))' && 
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')\" || exit 1"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  # ── React Frontend (Dev Server) ──────────────────────────
+  frontend:
+    image: node:20-alpine
+    container_name: adtech-frontend
+    restart: unless-stopped
+    working_dir: /app
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      backend:
+        condition: service_healthy
+
+  # ── Nginx Reverse Proxy ──────────────────────────────────
+  nginx:
+    build:
+      context: ./docker/nginx
+    container_name: adtech-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+      - frontend
+
+volumes:
+  pgdata:
+    driver: local

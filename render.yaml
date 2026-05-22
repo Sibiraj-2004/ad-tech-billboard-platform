@@ -1,0 +1,39 @@
+# ==============================================================
+# Render Blueprint Configuration (Infrastructure as Code)
+# ==============================================================
+# Use this file to deploy the entire backend stack with a single click.
+# Log into dashboard.render.com -> Blueprints -> New Blueprint Instance.
+
+services:
+  - type: web
+    name: ad-tech-backend
+    env: docker
+    dockerfilepath: docker/backend/Dockerfile
+    dockercontext: .
+    plan: free
+    envVars:
+      - key: APP_ENV
+        value: production
+      - key: APP_NAME
+        value: Ad-Tech Billboard Platform
+      - key: DEBUG
+        value: "false"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: "7"
+      - key: CORS_ORIGINS
+        value: "*"
+      - key: DATABASE_URL
+        sync: false
+        placeholder: "Enter production database connection string with +asyncpg: postgresql+asyncpg://user:pass@host/db"
+      - key: DATABASE_URL_SYNC
+        sync: false
+        placeholder: "Enter production database connection string: postgresql://user:pass@host/db"
+
+databases:
+  - name: adtech-db
+    plan: free
+    postgresMajorVersion: 16

@@ -1,0 +1,22 @@
+[project]
+name = "ad-tech-backend"
+version = "0.1.0"
+description = "Ad-Tech Billboard Booking Platform Backend"
+authors = [{ name = "Antigravity", email = "ai@google.com" }]
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy[asyncio]>=2.0.0",
+    "alembic",
+    "asyncpg",
+    "pydantic[email]>=2.0.0",
+    "pydantic-settings",
+    "python-jose[cryptography]",
+    "passlib[bcrypt]",
+    "python-multipart",
+    "pillow",
+    "aiosmtplib",
+]
+
+[tool.pyproject-ops]
+# Custom tool configuration

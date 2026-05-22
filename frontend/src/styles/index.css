@@ -1,0 +1,153 @@
+/* ================================
+   Ad-Tech — Global Styles
+   ================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Base Layer ──────────────────────────────────── */
+@layer base {
+  * {
+    @apply box-border;
+  }
+
+  html, body, #root {
+    height: 100%;
+    margin: 0;
+    overflow: hidden;
+  }
+
+  body {
+    @apply bg-surface-950 text-surface-50 font-sans;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-surface-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-surface-600 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-surface-500;
+  }
+
+
+  /* Force dark text on form controls inside light containers */
+  .bg-white input,
+  .bg-white select,
+  .bg-white textarea,
+  input.text-gray-900,
+  select.text-gray-900,
+  textarea.text-gray-900 {
+    color: #111827 !important;           /* gray-900 */
+    background-color: #ffffff !important;
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #9ca3af !important;           /* gray-400 */
+  }
+}
+
+/* ── Component Layer ─────────────────────────────── */
+@layer components {
+  /* Glass card effect */
+  .glass-card {
+    @apply bg-surface-800/60 backdrop-blur-xl border border-surface-700/50
+           rounded-2xl shadow-glass transition-all duration-300;
+  }
+
+  .glass-card:hover {
+    @apply border-surface-600/50 shadow-glass-lg;
+  }
+
+  /* Gradient text */
+  .gradient-text {
+    @apply bg-clip-text text-transparent
+           bg-gradient-to-r from-primary-400 via-secondary-400 to-accent-400;
+  }
+
+  /* Primary button */
+  .btn-primary {
+    @apply px-6 py-2.5 bg-gradient-to-r from-primary-600 to-primary-500
+           text-white font-semibold rounded-xl
+           hover:from-primary-500 hover:to-primary-400
+           active:scale-[0.98] transition-all duration-200
+           shadow-lg shadow-primary-600/25 hover:shadow-primary-500/30
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:active:scale-100;
+  }
+
+  /* Secondary button */
+  .btn-secondary {
+    @apply px-6 py-2.5 bg-surface-700/80 border border-surface-600
+           text-surface-200 font-semibold rounded-xl
+           hover:bg-surface-600/80 hover:border-surface-500
+           active:scale-[0.98] transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Danger button */
+  .btn-danger {
+    @apply px-6 py-2.5 bg-red-600/90 text-white font-semibold rounded-xl
+           hover:bg-red-500 active:scale-[0.98] transition-all duration-200
+           disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  /* Input field */
+  .input-field {
+    @apply w-full px-4 py-3 bg-surface-800/80 border border-surface-600/50
+           rounded-xl text-surface-100 placeholder-surface-400
+           focus:outline-none focus:ring-2 focus:ring-primary-500/50 focus:border-primary-500
+           transition-all duration-200;
+  }
+
+  /* Badge */
+  .badge {
+    @apply px-3 py-1 text-xs font-semibold rounded-full;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-500/20 text-emerald-400 border border-emerald-500/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-500/20 text-amber-400 border border-amber-500/30;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-500/20 text-red-400 border border-red-500/30;
+  }
+
+  .badge-info {
+    @apply badge bg-primary-500/20 text-primary-400 border border-primary-500/30;
+  }
+
+  /* Page container */
+  .page-container {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8;
+  }
+
+  /* Section heading */
+  .section-heading {
+    @apply text-2xl sm:text-3xl font-bold font-display text-white mb-2;
+  }
+
+  /* Stat card */
+  .stat-card {
+    @apply glass-card p-6 flex items-center gap-4;
+  }
+}
+
+/* ── Utility Layer ───────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
