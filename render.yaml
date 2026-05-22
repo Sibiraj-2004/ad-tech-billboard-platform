@@ -9,7 +9,7 @@ services:
     name: ad-tech-backend
     env: docker
     dockerfilePath: docker/backend/Dockerfile
-    dockerContext: .
+    dockerContext: backend
     plan: free
     envVars:
       - key: APP_ENV
