@@ -25,4 +25,7 @@ COPY . .
 EXPOSE 8000
 
 # Command to run the application
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+# 1. Run Alembic migrations to create/update all database tables
+# 2. Seed the database with default admin user and categories
+# 3. Start FastAPI with Uvicorn (no --reload in production)
+CMD ["sh", "-c", "alembic upgrade head && python -c 'import asyncio; from app.db.session import async_session_factory; from app.db.init_db import init_db; asyncio.run(init_db(async_session_factory()))' && uvicorn app.main:app --host 0.0.0.0 --port 8000"]
