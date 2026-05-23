@@ -37,6 +37,7 @@ python-dateutil==2.9.0
 python-slugify==8.0.4
 httpx==0.28.1
 razorpay==2.0.1
+g4f>=0.3.3.0
 
 # Development
 pytest==8.3.4
