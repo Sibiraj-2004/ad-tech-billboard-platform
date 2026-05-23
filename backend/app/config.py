@@ -42,8 +42,15 @@ class Settings(BaseSettings):
 
     @property
     def cors_origins_list(self) -> List[str]:
-        """Parse comma-separated CORS origins into a list."""
-        return [origin.strip() for origin in self.CORS_ORIGINS.split(",")]
+        """Parse comma-separated CORS origins into a list and sanitize them."""
+        origins = []
+        for origin in self.CORS_ORIGINS.split(","):
+            cleaned = origin.strip().strip("'").strip('"')
+            if cleaned.endswith("/"):
+                cleaned = cleaned[:-1]
+            if cleaned:
+                origins.append(cleaned)
+        return origins
 
     # ── File Upload ──────────────────────────────────────────
     UPLOAD_DIR: str = "uploads"
