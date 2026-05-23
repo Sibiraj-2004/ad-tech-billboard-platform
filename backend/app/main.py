@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 async def lifespan(app: FastAPI):
     """
     Startup and shutdown events.
-     - Startup: Log app info, create upload directories, print allowed CORS origins
+    - Startup: Log app info, create upload directories, print allowed CORS origins
     - Shutdown: Clean up resources
     """
     logger.info(f"🚀 {settings.APP_NAME} starting up ({settings.APP_ENV})")

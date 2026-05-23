@@ -22,13 +22,26 @@ def register_middleware(app: FastAPI) -> None:
 
     # ── CORS Middleware ──────────────────────────────────────
     # Allows the React frontend to make API requests
-    app.add_middleware(
-        CORSMiddleware,
-        allow_origins=settings.cors_origins_list,
-        allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
-    )
+    origins = settings.cors_origins_list
+    
+    if "*" in origins:
+        # Starlette/FastAPI doesn't allow allow_origins=["*"] when allow_credentials=True.
+        # We use allow_origin_regex=".*" to dynamically echo the request's origin, satisfying the browser's credentials rules!
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origin_regex=".*",
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
+    else:
+        app.add_middleware(
+            CORSMiddleware,
+            allow_origins=origins,
+            allow_credentials=True,
+            allow_methods=["*"],
+            allow_headers=["*"],
+        )
 
     # ── Request Logging & Timing Middleware ──────────────────
     @app.middleware("http")
