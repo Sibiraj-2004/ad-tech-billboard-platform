@@ -53,6 +53,16 @@ class BadRequestException(AppException):
 
 # ── Global Exception Handlers ────────────────────────────────
 
+def get_cors_headers(request: Request) -> dict:
+    """Get CORS headers based on the request's origin to prevent CORS masking on errors."""
+    headers = {}
+    origin = request.headers.get("origin")
+    if origin:
+        headers["Access-Control-Allow-Origin"] = origin
+        headers["Access-Control-Allow-Credentials"] = "true"
+    return headers
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     """Register all global exception handlers on the FastAPI app."""
 
@@ -66,6 +76,7 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "message": exc.message,
                 "errors": exc.errors,
             },
+            headers=get_cors_headers(request)
         )
 
     @app.exception_handler(RequestValidationError)
@@ -85,6 +96,7 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "message": "Validation failed",
                 "errors": errors,
             },
+            headers=get_cors_headers(request)
         )
 
     @app.exception_handler(Exception)
@@ -97,4 +109,5 @@ def register_exception_handlers(app: FastAPI) -> None:
                 "message": "Internal server error",
                 "errors": [],
             },
+            headers=get_cors_headers(request)
         )
